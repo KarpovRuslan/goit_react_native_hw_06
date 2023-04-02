@@ -15,6 +15,8 @@ import {
   ImageBackground,
   Dimensions,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { authSignUpUser } from "../../redux/auth/authOperations";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,7 +26,7 @@ const windowDimensions = Dimensions.get("window");
 const screenDimensions = Dimensions.get("screen");
 
 export default function RegistrationScreen({ navigation }) {
-  const [name, setName] = useState("");
+  const [displayName, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
@@ -32,6 +34,8 @@ export default function RegistrationScreen({ navigation }) {
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
   const [hidePass, setHidePass] = useState(true);
+
+  const dispatch = useDispatch();
 
   const [fontsLoaded] = useFonts({
     "Roboto-Medium": require("../../assets/fonts/Roboto-Medium.ttf"),
@@ -56,12 +60,12 @@ export default function RegistrationScreen({ navigation }) {
   const passwordHandler = (text) => setPassword(text);
 
   const onRegister = () => {
-    if (!name || !email || !password) {
+    if (!displayName || !email || !password) {
       alert("Please make sure all fields are filled in correctly");
       return;
     }
     setIsShowKeyboard(false);
-    Alert.alert("Credentials", `${name} + ${email} + ${password}`);
+    dispatch(authSignUpUser({ email, password, displayName }));
     setName("");
     setEmail("");
     setPassword("");
@@ -118,7 +122,7 @@ export default function RegistrationScreen({ navigation }) {
               <View style={styles.form}>
                 <Text style={styles.textRegistration}>Registration Form</Text>
                 <TextInput
-                  value={name}
+                  value={displayName}
                   onChangeText={nameHandler}
                   placeholder="Name"
                   onFocus={onFocusName}
@@ -264,8 +268,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     alignItems: "center",
-    //width: screenDimensions.width,
-    //justifyContent: "center",
   },
   form: {
     marginHorizontal: 16,

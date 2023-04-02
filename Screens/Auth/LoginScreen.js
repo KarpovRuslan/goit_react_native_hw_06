@@ -13,6 +13,8 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../../redux/auth/authOperations";
 
 SplashScreen.preventAutoHideAsync();
 const imageBack = require("../../assets/images/photo.jpg");
@@ -24,6 +26,8 @@ export default function LoginScreen({ navigation }) {
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
   const [hidePass, setHidePass] = useState(true);
+
+  const dispatch = useDispatch();
 
   const [fontsLoaded] = useFonts({
     "Roboto-Medium": require("../../assets/fonts/Roboto-Medium.ttf"),
@@ -39,7 +43,7 @@ export default function LoginScreen({ navigation }) {
       return;
     }
     setIsShowKeyboard(false);
-    //Alert.alert("Credentials", `${email} + ${password}`);
+    dispatch(authSignInUser({ email, password }));
     navigation.navigate("Home");
     setEmail("");
     setPassword("");
